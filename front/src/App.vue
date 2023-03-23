@@ -1,26 +1,55 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <header>
+    <router-link to="/" class="logout" v-if="isMain"> Sign out</router-link>
+  </header>
+  <router-view></router-view>
+  <footer></footer>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  components: {},
+  data() {
+    return {}
+  },
+  computed: {
+    isMain() {
+      return this.$route.path !== '/';
+    }
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+body {
+  margin: 0;
 }
+
+header,
+footer {
+  height: 50px;
+  background-color: black;
+}
+
+header {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  padding: 0 25px;
+}
+
+footer {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
+
+.logout {
+  text-decoration: none;
+  color: white;
+  font-size: 24px;
+}
+
 </style>
