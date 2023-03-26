@@ -7,7 +7,7 @@
       </p>
     </div>
     <div class="field">
-      <input type="text" v-model="text" placeholder="Message">
+      <input type="text" v-model="message" placeholder="Message">
       <button @click="setMessage"> Send </button>
     </div>
     <div class="listUsers">
@@ -28,22 +28,30 @@ export default {
       socket: '',
       posts: [],
       activeUsers: [],
-      text: '',
+      message: '',
+      login: this.$route.params.login,
+      room: this.$route.query.room
     }
   },
   mounted() {
     this.socket = io("ws://localhost:3000");
 
     this.socket.emit('login', {
-      login:  this.$route.params.login,
-      room:  this.$route.query.room
+      login:  this.login,
+      room:  this.room
     });
+
     this.getListActiveUsers();
     this.getMessage();
   },
   methods: {
     setMessage() {
-      this.socket.emit('message', this.text);
+      this.socket.emit('message', {
+        room: this.room,
+        message: this.message
+      });
+
+      this.message = '';
     },
     getListActiveUsers() {
       this.socket.on('active-users', (users) => {
@@ -57,13 +65,17 @@ export default {
     },
     checkActiveUsers() {
       this.socket.on('check-user', () => {
-        console.log('111111122223333')
         this.socket.emit('login', this.$route.params.login);
       })
     }
   },
   unmounted() {
-    this.socket.disconnect();
+    this.socket.emit('left-room', {
+      login: this.login,
+      room: this.room,
+    })
+
+   this.socket.disconnect();
   }
 }
 </script>
